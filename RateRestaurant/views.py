@@ -51,7 +51,7 @@ def area(request,area_name_slug):
     try:
         area = Area.objects.get(slug=area_name_slug)
         context_dict['area_name'] = area.name
-        restaurant = Restaurant.objects.filter(area=area)
+        restaurant = Restaurant.objects.filter(area=area).order_by('-ave_rating')
         context_dict['area'] = area
         context_dict['area_all']=Area.objects.all()
         context_dict['restaurant'] = restaurant
