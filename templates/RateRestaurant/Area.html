@@ -1,0 +1,48 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load thumbnail %}
+{% block title %}{{ area_name }}{% endblock %}
+{% block side_block %}
+    {% if area_all %}
+        <ul class="list-group">
+            {% for ar in area_all %}
+            <li class="list-group-item"> <a href="{% url 'area' ar.slug %}"> {{ar.name}}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    </ul>
+    {% endif %}
+{% endblock %}
+{% block body_block %}
+    <h1>{{ area_name }}</h1>
+    {% if area %}
+        {% if restaurant %}
+            <ul>
+                {% for res in restaurant %}
+                     <h2><a href="/RateRestaurant/restaurant/{{ res.slug }}/">{{res.name}}</a> </h2></ul><br>
+                            <a href="{{ res.image.get_url }}">
+                             <img src='/{{ res.image|thumbnail:"320x240" }}' />
+                            </a>
+
+                    <p class="bg-warning">
+                    {{ res.description }} </br>
+                    {{ res.address }} </br>
+                    {{ res.telephone }} </br>
+                     <input readonly="true" type="number" class="rating"  showClear = "true" value="{{res.ave_rating}}" data-size="lg" data-rtl="false"></p>
+            <strong>Average price for one person: {{ res.price }}</strong></br>
+            </ul>
+                {% endfor %}
+        {% else %}
+            <strong>No restaurant in this area</strong>
+        {%  endif %}
+    {% else %}
+        The specified area {{ area_name }} does not exit!
+    {% endif %}
+    {% if user.is_authenticated %}
+        <a href="/RateRestaurant/add_restaurant/{{area.slug}}/">Add Restaurant</a></br>
+    {% else %}
+        <strong></strong> <a href="{% url 'login' %}">Login</a></strong>
+    {% endif %}
+{% endblock %}

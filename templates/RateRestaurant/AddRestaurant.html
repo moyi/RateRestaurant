@@ -1,0 +1,14 @@
+<{% extends 'base.html' %}
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+
+{% block title %}add Restaurant{% endblock %}
+{% block body_block %}
+    <form id="restaurant_form" method="post" action="/RateRestaurant/add_restaurant/{{area.slug}}/" enctype="multipart/form-data">
+         <h2 class="form-signin-heading">Add a Restaurant to <a href="/RateRestaurant/area/{{area.slug}}/"> {{ area.name }}</a></h2>
+        {% csrf_token %}
+       {{form|as_bootstrap}}
+        <button class="btn btn-primary" type="submit" name="submit">Add Restaurant</button>
+    </form>
+
+{% endblock %}

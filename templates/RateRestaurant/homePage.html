@@ -1,0 +1,71 @@
+<{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load thumbnail %}
+{% block title %}home{% endblock %}
+{% block side_block %}
+    {% if customer %}
+         <h3 >Customers</h3>
+    <ul>
+        {% for cus in customer %}
+        <li>{{ cus }}</li>
+            <a href="{{ cus.picture.get_url }}">
+            <img src='/{{ cus.picture|thumbnail:"100x100" }}' />
+            </a>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+{% block body_block %}
+        {% if user.is_authenticated %}
+<div class="page-header">
+            <h1>Welcome to Restaurant Rating {{ user.username }}!</h1>
+        {% else %}
+            <h1>Welcome to Restaurant Rating</h1>
+        {% endif %}
+</div>
+
+ <div class="panel panel-info">
+ <a href="/RateRestaurant/add_area/">Add Area</a></br>
+    <div class="panel-heading">
+                <h3 class="panel-title">Area</h3>
+                {% if area %}
+                    <ul class="list-group">
+                        {% for ar in area %}
+                        <li class="list-group-item "> <a href="{% url 'area' ar.slug %}"> {{ar.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <strong>There are no restaurants present.</strong><br/>
+                {% endif %}
+            </div>
+
+       <div class="panel-heading">
+                <h3 class="panel-title">Top Restaurant</h3>
+                {% if restaurant %}
+                    <ul class="list-group">
+                        {% for res in restaurant %}
+                        <li class="list-group-item">
+                             <div class="row">
+                                <div class="col-xs-3 col-sm-2 ">
+                                 <a href="{{ res.image.get_url }}">
+                                       <img src='/{{ res.image|thumbnail:"200x200" }}' class="img-rounded"/>
+                                        </a>
+                                 </div>
+                                 <div class="col-md-offset-3">
+                                     </br></br>
+                                    <strong><a href="/RateRestaurant/restaurant/{{ res.slug }}/">{{ res.name }}</a></strong>
+                                    <input readonly="true" type="number" class="rating"  showClear = "true" value="{{res.ave_rating}}" data-size="lg" data-rtl="false"></br>
+                                 </div>
+                             </div>
+                        </li></br>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <strong>There are no Restaurants present.</strong>
+                {% endif %}
+            </div>
+
+          </div>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load thumbnail %}
+{% block title %}{{ restaurant_name }}{% endblock %}
+{% block side_block %}
+    <form id="option_form" method="post" action="/RateRestaurant/restaurant/{{ restaurant.slug }}/">
+    <select name="dropdown">
+        {% if option %}
+            <option value="rate" id="rate">rate</option>
+            <option value="date" id="date">date</option>
+        {% else %}
+            <option value="date" id="date1">date</option>
+            <option value="rate" id="rate1">rate</option>
+        {% endif %}
+    </select>
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit" name="submit">update</button>
+    </form>
+    </br></br></br>
+    {% if area_all %}
+        <ul class="list-group">
+            {% for ar in area_all %}
+            <li class="list-group-item"> <a href="{% url 'area' ar.slug %}"> {{ar.name}}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    </ul>
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+    <h1>{{ restaurant_name }}</h1>
+        {% if restaurant %}
+        <div class="row">
+            <div class="col-xs-5 col-sm-3>
+                <a href="{{ restaurant.image.get_url }}">
+                <img src='/{{ restaurant.image|thumbnail:"420x240" }}' />
+            </a>
+            </div>
+           <div>
+               {% if rate %}
+                </br></br><input readonly="true" type="number" class="rating"  showClear = "true" value="{{rate}}" data-size="lg" data-rtl="false"></br>
+            {% endif %}
+               <strong><a href="{{ restaurant.url }}">link to {{ restaurant.name }}</a></strong>  </br></br>
+           </div>
+        </div>
+            <p class="bg-warning">
+            {{ restaurant.description }} </br>
+            Address:{{ restaurant.address }} </br>
+            Telephone:{{ restaurant.telephone }} </br>
+                Average price for one person: {{ restaurant.price }}</br>
+           </p>
+
+            {% if comment %}
+                {% for c in comment %}
+                <li  class="list-group-item">
+                    <div class ="row">
+                        <div class="col-xs-5 col-sm-2">
+                            <a href="{{ c.customer.picture.get_url }}">
+                            <img src='/{{c.customer.picture|thumbnail:"100x100"}}' class="img-circle" />
+                        </a>
+                        </div>
+                        <div >
+                           <strong class="text-success">{{ c.comments }}</strong></br>
+                             <strong>time:{{ c.time}}</strong>
+                        </div>
+                    </div>
+
+                        <p class="bg-danger">
+                            <strong id="like_count{{c.id}}">{{c.likes}}</strong> people like this comment
+                            {% if user.is_authenticated and not user.is_superuser %}
+                                {% ifnotequal user.username c.customer.user.username %}
+                                    <button class="likes" data-comid="{{c.id}}"  type="button">
+                                    <span class="glyphicon glyphicon-thumbs-up"></span>
+                                    Like
+                                    </button>
+                                {% endifnotequal %}
+                            {% endif %}
+                        </p>
+
+                   <input readonly="true" type="number" class="rating"  showClear = "true" value="{{c.rating}}" data-size="lg" data-rtl="false">
+                    </li></br>
+
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% if user.is_authenticated and not user.is_superuser %}
+            {% ifnotequal user.username c.customer.user.username %}
+              <strong><a href="/RateRestaurant/add_comment/{{restaurant.slug}}/">Add Comment</a></strong> </br>
+             {% endifnotequal %}
+        {% else %}
+               <strong></strong> <a href="{% url 'login' %}">Login</a></strong>
+        {% endif %}
+
+{% endblock %}

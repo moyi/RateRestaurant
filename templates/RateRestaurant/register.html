@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap_toolkit %}
+{% block title %}Register{% endblock %}
+
+{% block body_block %}
+    <h1>Register with Restaurant</h1>
+    {% if registered %}
+    <strong>Thank you for registering</strong>
+    <a href="/RateRestaurant/login"><strong>Login</strong></a><br/>
+    {% else %}
+    <strong>Register here</strong><br/>
+    <form id="user_form" method="post" action="/RateRestaurant/register/" enctype="multipart/form-data">
+         {% csrf_token %}
+        {% bootstrap_form user_form layout="vertical" %}
+        {% bootstrap_form customer_form layout="vertical" %}
+         </br><input class="btn btn-success" type="submit" name = "submit" value="Register"/>
+    </form>
+    {% endif %}
+{% endblock %}

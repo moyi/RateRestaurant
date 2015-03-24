@@ -1,0 +1,15 @@
+<{% extends 'base.html' %}
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+
+{% block title %}add Restaurant{% endblock %}
+{% block body_block %}
+    <form id="comment_form" method="post" action="/RateRestaurant/add_comment/{{restaurant.slug}}/">
+
+        {% csrf_token %}
+             {{ form|as_bootstrap }}
+
+        <button class="btn btn-primary" type="submit" name="submit">ok</button>
+    </form>
+
+{% endblock %}
